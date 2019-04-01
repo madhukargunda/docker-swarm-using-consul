@@ -82,14 +82,73 @@ Stpe 3:
 Run the consul server in newly created docker machine
 docker run -d -p 8500:8500 -h consul --restart always gliderlabs/consul-server -bootstrap
 
+Note : Run the following command docker ps -a to verify the consul-server is running or not
+
 Step 4 :
 Do test consul-server is installed successfully
 curl $(docker-machine ip consul):8500/v1/catalog/services
 
 Step 5 :
-Run the Consul UI in browser and verify the UI is working fine 
-
+Run the Consul UI URL in the browser and verify UI is getting displayed or not. 
 http://192.168.99.100:8500/ui/#/dc1/service
 
-```
+ Note : Run docker-machine ip consul Get the IP address of consul URL 
 
+```
+## Step 2 : Create the Docker swaram and configure the swaram with consul key value store
+
+```
+Create the docker swarm manager with three node cluster and assign label to each node
+and configure the by swarm discovery value with consul URL
+
+Step1 : Create the swarm manager and configure the swarm discovery with consul Ip and Port
+
+docker-machine create \
+    -d virtualbox \
+    --swarm \
+    --swarm-master \
+    --swarm-discovery="consul://$(docker-machine ip consul):8500"\
+    --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
+    --engine-opt="cluster-advertise=eth1:2376" \
+    manager
+
+Step 2:
+
+Create worker-1 node 
+
+docker-machine create \
+	-d virtualbox \
+    --swarm \
+    --swarm-discovery="consul://$(docker-machine ip consul):8500"\
+    --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
+    --engine-opt="cluster-advertise=eth1:2376" \
+    --engine-label host=worker-1 \
+    worker-1
+
+ Step 3 :
+
+ Create worker-2 node
+
+ docker-machine create \
+	-d virtualbox \
+    --swarm \
+    --swarm-discovery="consul://$(docker-machine ip consul):8500"\
+    --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
+    --engine-opt="cluster-advertise=eth1:2376" \
+    --engine-label host=worker-2 \
+    worker-2
+
+  Step 4 :
+
+  Create the worker-3 node
+
+  docker-machine create \
+	-d virtualbox \
+    --swarm \
+    --swarm-discovery="consul://$(docker-machine ip consul):8500"\
+    --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
+    --engine-opt="cluster-advertise=eth1:2376" \
+    --engine-label host=worker-3 \
+    worker-3
+    
+ ```
