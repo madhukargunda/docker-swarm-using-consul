@@ -93,9 +93,11 @@ Run the Consul UI URL in the browser and verify UI is getting displayed or not.
 http://192.168.99.100:8500/ui/#/dc1/service
 
  Note : Run docker-machine ip consul Get the IP address of consul URL 
-
 ```
-## Step 2 : Create the Docker swaram and configure the swaram with consul key value store
+![consul-ui](https://user-images.githubusercontent.com/5623861/55341221-d41f4900-54d8-11e9-8e32-7d389d4e0d2c.jpeg)
+
+
+## Step 2 : Create the Docker swarm and configure the swaram with consul key value store
 
 ```
 Create the docker swarm manager with three node cluster and assign label to each node
