@@ -18,6 +18,8 @@ Docker Swarm is a group of different docker demaons running in differnt hosts gr
 Its a Load balancing tool which provides the clustering and scheduling of the containers in different nodes.
 Docker swarm is a automated administrator when ever any of the nodes fails it re schedules the containers/work load 
 all the availbale nodes.Docker Swarm is natively implememted load balancer.In the docker swarm administrator gives the instructions to swarm manager which internally talks to the nodes which are in the docker cluster.Once the docker swarm created we no longer to worry about the distributing the work load into different machines , Docker swarm will take cares about all these
+
+![docker-swarm-docker-native-clustering-5-638](https://user-images.githubusercontent.com/5623861/55332845-bfd35000-54c8-11e9-9c7b-b589d24de256.jpg)
  	
 
 
