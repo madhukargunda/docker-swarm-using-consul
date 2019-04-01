@@ -83,7 +83,10 @@ Run the consul server in newly created docker machine
 docker run -d -p 8500:8500 -h consul --restart always gliderlabs/consul-server -bootstrap
 
 Note : Run the following command docker ps -a to verify the consul-server is running or not
+```
+<img width="1657" alt="Consul-Server-Running" src="https://user-images.githubusercontent.com/5623861/55341625-94a52c80-54d9-11e9-81e3-25818bd250bb.png">
 
+```
 Step 4 :
 Do test consul-server is installed successfully
 curl $(docker-machine ip consul):8500/v1/catalog/services
