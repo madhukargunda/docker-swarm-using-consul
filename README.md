@@ -157,3 +157,138 @@ docker-machine create \
     worker-3
     
  ```
+ In the above commands
+ --swarm-discovery defines address of the discovery service
+ --cluster-advertise advertise the machine on the network
+ --cluster-store designate a distributed k/v storage backend for the cluster
+ 
+ ```
+ Step 5 : 
+ 
+ execute the below docker command to connect to the manager node
+ eval $(docker-machine env --swarm manager)
+
+Step 6 : run the below compose file in manager node "docker-compose up -d" ,This command pulls the images and 
+run the container .Docker swaram manager will take care of the distrbuting the services in different nodes
+
+version: '3.3'
+
+services:
+  customer-service:
+    image: madhukargunda/customer-service:1.0
+    ports: 
+      - 8080:8080
+
+  account-service:
+    image: madhukargunda/account-service:1.0
+    ports: 
+      - 8081:8081
+
+Ste 7: 
+Connect to this newly created master and find some information about it:
+eval "$(docker-machine env swarm-master)"
+docker info
+
+Containers: 7
+ Running: 7
+ Paused: 0
+ Stopped: 0
+Images: 12
+Server Version: swarm/1.2.9
+Role: primary
+Strategy: spread
+Filters: health, port, containerslots, dependency, affinity, constraint, whitelist
+Nodes: 4
+
+ manager: xxx.xxx.xx.xxx:xxxx
+  └ ID: ZC6I:F66E:UMIS:42Z2:QGNR:XJ25:T65I:RRLO:QE34:V72M:AMZB:B52C|xxx.xxx.xx.xxx:xxxx
+  └ Status: Healthy
+  └ Containers: 2 (2 Running, 0 Paused, 0 Stopped)
+  └ Reserved CPUs: 0 / 1
+  └ Reserved Memory: 0 B / 1.014 GiB
+  └ Labels: kernelversion=4.14.104-boot2docker, operatingsystem=Boot2Docker 18.09.3 (TCL 8.2.1), ostype=linux, provider=virtualbox, storagedriver=overlay2
+  └ UpdatedAt: 2019-04-07T16:00:12Z
+  └ ServerVersion: 18.09.3
+ worker-1: 192.168.99.102:2376
+  └ ID: 5RTO:2MVI:XWD7:3LRJ:IXZ3:ZUGX:HR6U:VZ5X:4NAA:XOUO:YNKH:G5CA|xxx.xxx.xx.xxx:xxxx
+  └ Status: Healthy
+  └ Containers: 1 (1 Running, 0 Paused, 0 Stopped)
+  └ Reserved CPUs: 0 / 1
+  └ Reserved Memory: 0 B / 1.014 GiB
+  └ Labels: host=worker-1, kernelversion=4.14.104-boot2docker, operatingsystem=Boot2Docker 18.09.3 (TCL 8.2.1), ostype=linux, provider=virtualbox, storagedriver=overlay2
+  └ UpdatedAt: 2019-04-07T16:00:22Z
+  └ ServerVersion: 18.09.3
+ worker-2: 192.168.99.103:2376
+  └ ID: BXEE:3NXX:3A2B:TDBP:YLGB:RP2I:5O4S:HPZH:AJI6:6EIC:GYHR:44I3|xxx.xxx.xx.xxx:xxxx
+  └ Status: Healthy
+  └ Containers: 2 (2 Running, 0 Paused, 0 Stopped)
+  └ Reserved CPUs: 0 / 1
+  └ Reserved Memory: 0 B / 1.014 GiB
+  └ Labels: host=worker-2, kernelversion=4.14.104-boot2docker, operatingsystem=Boot2Docker 18.09.3 (TCL 8.2.1), ostype=linux, provider=virtualbox, storagedriver=overlay2
+  └ UpdatedAt: 2019-04-07T15:59:56Z
+  └ ServerVersion: 18.09.3
+  └ Status: Healthy
+  └ Containers: 2 (2 Running, 0 Paused, 0 Stopped)
+  └ Reserved CPUs: 0 / 1
+  └ Reserved Memory: 0 B / 1.014 GiB
+  └ Labels: host=worker-3, kernelversion=4.14.104-boot2docker, operatingsystem=Boot2Docker 18.09.3 (TCL 8.2.1), ostype=linux, provider=virtualbox, storagedriver=overlay2
+  └ UpdatedAt: 2019-04-07T16:00:24Z
+  └ ServerVersion: 18.09.3
+
+
+We can see the number of list of nodes in the cluster and number of containers running in each node.
+
+Step 8 : 
+
+Run the command to know about the more information about containers
+docker ps 
+docker ps -a 
+
+madhu@Admins-MacBook-Pro:~/dockerfiles/docker-swarm-consul$ docker ps
+CONTAINER ID        IMAGE                                COMMAND                  CREATED             STATUS              PORTS                                     NAMES
+0b63f0da1bb7        madhukargunda/customer-service:1.0   "java -jar customer-…"   7 minutes ago       Up 3 minutes        3333/tcp, xxx.xxx.xx.xxx:8080->8080/tcp   worker-2/docker-swarm-consul_customer-service_1
+3246045f3036        madhukargunda/account-service:1.0    "java -jar account-s…"   7 minutes ago       Up 3 minutes        2222/tcp, xxx.xxx.xx.xxx:8081->8081/tcp   worker-3/docker-swarm-consul_account-service_1
+madhu@Admins-MacBook-Pro:~/dockerfiles/docker-swarm-consul$ 
+
+Step 9 : 
+
+Run the below command to scale the containers
+
+docker-compose scale account-service=4
+docker-compose scale customer-service=4
+
+docker swarm distributing the containers in different nodes based on the stratagy we specified.
+
+madhu@Admins-MacBook-Pro:~/dockerfiles/docker-swarm-consul$ docker ps
+CONTAINER ID        IMAGE                                COMMAND                  CREATED             STATUS              PORTS                                     NAMES
+26a2f4eb6b6e        madhukargunda/customer-service:1.0   "java -jar customer-…"   12 minutes ago      Up 2 minutes        3333/tcp, xxx.xxx.xx.xxx:xxxx->8080/tcp   worker-2/docker-swarm-consul_customer-service_2
+6dd4323604b5        madhukargunda/customer-service:1.0   "java -jar customer-…"   12 minutes ago      Up 2 minutes        3333/tcp, xxx.xxx.xx.xxx:xxxx->8080/tcp   manager/docker-swarm-consul_customer-service_3
+90638eacd5be        madhukargunda/customer-service:1.0   "java -jar customer-…"   12 minutes ago      Up 2 minutes        3333/tcp, xxx.xxx.xx.xxx:xxxx->8080/tcp   worker-1/docker-swarm-consul_customer-service_4
+5206e74f7de6        madhukargunda/account-service:1.0    "java -jar account-s…"   16 minutes ago      Up 7 minutes        2222/tcp, xxx.xxx.xx.xxx:xxxx->8081/tcp   worker-2/docker-swarm-consul_account-service_2
+68b0d287ba02        madhukargunda/account-service:1.0    "java -jar account-s…"   16 minutes ago      Up 7 minutes        2222/tcp, xxx.xxx.xx.xxx:xxxx->8081/tcp   worker-3/docker-swarm-consul_account-service_4
+ff8dfee06fb5        madhukargunda/account-service:1.0    "java -jar account-s…"   16 minutes ago      Up 7 minutes        2222/tcp, xxx.xxx.xx.xxx:xxxx->8081/tcp   manager/docker-swarm-consul_account-service_3
+8bd6823e611b        madhukargunda/customer-service:1.0   "java -jar customer-…"   28 minutes ago      Up 19 minutes       3333/tcp, xxx.xxx.xx.xxx:xxxx->8080/tcp   worker-3/docker-swarm-consul_customer-service_1
+9a8d6091e2e2        madhukargunda/account-service:1.0    "java -jar account-s…"   28 minutes ago      Up 19 minutes       2222/tcp, xxx.xxx.xx.xxx:xxxx->8081/tcp   worker-1/docker-swarm-consul_account-service_1
+
+
+Step 10 : Run the docker info command get the number of containers running all the nodes
+```
+### Configuring the Registrator
+
+I have created a shell script which connects to the all the nodes and install the registrator container
+
+hosts=(swarm-master load-balancer app-server-1 app-server-2 database)
+
+```
+for host in ${hosts[@]}; do
+        eval $(docker-machine env ${host})
+  docker run -d \
+    --name=registrator \
+    -h $(docker-machine ip ${host}) \
+    -v=/var/run/docker.sock:/tmp/docker.sock \
+    gliderlabs/registrator \
+    consul://$(docker-machine ip consul):8500
+done
+```
+ 
+ 
