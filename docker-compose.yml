@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+  customer-service:
+    image: madhukargunda/customer-service:1.0
+    ports: 
+      - 8080:8080
+    
+
+  account-service:
+    image: madhukargunda/account-service:1.0
+    ports: 
+      - 8081:8081
+    
+
