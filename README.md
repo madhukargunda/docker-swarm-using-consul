@@ -7,7 +7,7 @@ with docker swarm
 
 ```
 1.What is Docker Swarm
-2.Swaram Scheduling Stratagies
+2.Swarm Scheduling Stratagies
 3.What is Consul Discovery
 3.How to Configure Consul with Docker Swarm
 
@@ -35,7 +35,7 @@ all the availbale nodes.Docker Swarm is natively implememted load balancer.In th
  	
 ## Swarm Scheduling Stratagies
 
-Docker Swaram uses the different scheduling stratagies where to distribute the load 
+Docker Swarm uses the different scheduling stratagies where to distribute the load 
 
 ```
 a.Spread
@@ -46,22 +46,22 @@ c.random
 ## Spread :
 
 a.This is the default Strategies in docker swarm cluster.
-b.In this stratagy docker swaram distributes the load evenly in all available Worker Nodes.
+b.In this stratagy docker swarm distributes the load evenly in all available Worker Nodes.
 c.If we have three nodes swarm cluster ,Docker swarm distribute the one containers in each node.
 
 ## binpack :
 
-a.In this stratagy docker swaram distribute the load on the node which is most packed with many container until that node can not run any containers.
+a.In this stratagy docker swarm distribute the load on the node which is most packed with many container until that node can not run any containers.
 
 ## random :
 
-a.In this stratagy docker swaram distibute the load randomly on the different nodes.
+a.In this stratagy docker swarm distibute the load randomly on the different nodes.
 
-We can choose the stratagy by specifying the --strategy flag while swaram creation.
+We can choose the stratagy by specifying the --strategy flag while swarm creation.
 
 ## What is Consul Discovery
 
-Docker swaram internally contains the key value store which is used to store the list of ip adress of the nodes which are in the swaram cluster. We have thire party tools which provides the distributed key value stores and service discovery.
+Docker swarm internally contains the key value store which is used to store the list of ip adress of the nodes which are in the swarm cluster. We have thire party tools which provides the distributed key value stores and service discovery.
 Hashicorp consul is the one of the tool we can configure with the docker swarm
 
 
